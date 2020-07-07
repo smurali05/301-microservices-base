@@ -31,7 +31,7 @@ namespace MT.OnlineRestaurant.DataLayer
         #endregion
 
         #region Interface Methods
-        public bool BookYourTable(TblTableOrder tblTableOrder)
+        public int BookYourTable(TblTableOrder tblTableOrder)
         {
             int? paymentId = null;
             if (tblTableOrder != null)
@@ -43,12 +43,9 @@ namespace MT.OnlineRestaurant.DataLayer
                 tblTableOrder.ToDate = tblTableOrder.FromDate;
 
                 _orderManagementContext.Set<TblTableOrder>().Add(tblTableOrder);
-                _orderManagementContext.SaveChanges();
-
-                return true;
             }
 
-            return false;
+            return _orderManagementContext.SaveChanges();
         }
 
         /// <summary>
@@ -66,6 +63,12 @@ namespace MT.OnlineRestaurant.DataLayer
             }
 
             return true;
+        }
+
+        public int AddTableOrderMapping(TblTableOrderMapping orderMapping)
+        {
+            _orderManagementContext.Set<TblTableOrderMapping>().Add(orderMapping);
+            return _orderManagementContext.SaveChanges();
         }
 
         /// <summary>

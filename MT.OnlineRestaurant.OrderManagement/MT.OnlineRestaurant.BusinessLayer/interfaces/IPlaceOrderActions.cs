@@ -1,4 +1,5 @@
 ﻿using MT.OnlineRestaurant.BusinessEntities;
+using MT.OnlineRestaurant.BusinessEntities.ServiceModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace MT.OnlineRestaurant.BusinessLayer.interfaces
 {
     public interface IPlaceOrderActions
     {
+        List<FoodOrderMapping> UpdateOutOfStock(StockInformation stock);
         int PlaceOrder(OrderEntity orderEntity);
         int CancelOrder(int orderId);
 
@@ -21,6 +23,7 @@ namespace MT.OnlineRestaurant.BusinessLayer.interfaces
 
         Task<bool> IsValidRestaurantAsync(OrderEntity orderEntity, int UserId, string UserToken);
         Task<bool> IsOrderItemInStock(OrderEntity orderEntity, int UserId, string UserToken);
+        List<FoodOrderMapping> UpdateStockPrice(StockPrice stocks);
 
     }
 }

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.902
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30204.135
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MT.OnlineRestaurant.SearchManagement", "MT.OnlineRestaurant.SearchManagement\MT.OnlineRestaurant.SearchManagement.csproj", "{2FED3E92-FD04-46C5-A530-3FA3D083F280}"
 EndProject
@@ -12,6 +12,12 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MT.OnlineRestaurant.BusinessEntities", "MT.OnlineRestaurant.BusinessEntities\MT.OnlineRestaurant.BusinessEntities.csproj", "{78C185CE-52E2-4968-B161-A932E7A47534}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MT.OnlineRestaurant.UT", "MT.OnlineRestaurant.UT\MT.OnlineRestaurant.UT.csproj", "{F3FA7F27-F754-49FB-91E0-C46AE2B1F7A9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineRestaurant.LoggingManagement", "OnlineRestaurant.LoggingManagement\OnlineRestaurant.LoggingManagement.csproj", "{B76991EF-F25C-41DC-8E72-1DE88DEC02FA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MT.OnlineRestaurant.MessageManagement", "MT.OnlineRestaurant.MessageManagement\MT.OnlineRestaurant.MessageManagement.csproj", "{AC26566D-0C51-4BC4-8053-E77736E6B421}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MT.OnlineRestaurant.ValidateUserHandler", "..\MT.OnlineRestaurant.AccountManagement\MT.OnlineRestaurant.ValidateUserHandler\MT.OnlineRestaurant.ValidateUserHandler.csproj", "{295B7E0C-D462-4722-B413-B23EFF84A0A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +45,18 @@ Global
 		{F3FA7F27-F754-49FB-91E0-C46AE2B1F7A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3FA7F27-F754-49FB-91E0-C46AE2B1F7A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F3FA7F27-F754-49FB-91E0-C46AE2B1F7A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B76991EF-F25C-41DC-8E72-1DE88DEC02FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B76991EF-F25C-41DC-8E72-1DE88DEC02FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B76991EF-F25C-41DC-8E72-1DE88DEC02FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B76991EF-F25C-41DC-8E72-1DE88DEC02FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC26566D-0C51-4BC4-8053-E77736E6B421}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC26566D-0C51-4BC4-8053-E77736E6B421}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC26566D-0C51-4BC4-8053-E77736E6B421}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC26566D-0C51-4BC4-8053-E77736E6B421}.Release|Any CPU.Build.0 = Release|Any CPU
+		{295B7E0C-D462-4722-B413-B23EFF84A0A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{295B7E0C-D462-4722-B413-B23EFF84A0A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{295B7E0C-D462-4722-B413-B23EFF84A0A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{295B7E0C-D462-4722-B413-B23EFF84A0A3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

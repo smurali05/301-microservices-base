@@ -1,5 +1,6 @@
 ﻿#region References
 using MT.OnlineRestaurant.BusinessEntities;
+using System.Threading.Tasks;
 #endregion
 
 #region Namespace Definition
@@ -13,13 +14,17 @@ namespace MT.OnlineRestaurant.BusinessLayer.interfaces
         /// </summary>
         /// <param name="bookingTable"></param>
         /// <returns></returns>
-        bool BookYourTable(BookTable bookingTable);
+        Task<bool> BookYourTable(BookTable bookingTable);
 
         /// <summary>
         /// verifies whether the table is available for booking or not
         /// </summary>
         /// <param name="tblTableOrder"></param>
         /// <returns></returns>
+        /// 
+
+
+
         bool CheckTableAvailability(BookTable bookingTable);
 
         /// <summary>

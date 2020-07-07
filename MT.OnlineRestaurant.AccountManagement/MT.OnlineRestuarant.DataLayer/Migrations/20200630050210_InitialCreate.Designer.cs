@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace MT.OnlineRestaurant.DataLayer.Migrations
+namespace MT.OnlineRestuarant.DataLayer.Migrations
 {
     [DbContext(typeof(CustomerManagementContext))]
-    [Migration("20191023060108_customer_010")]
-    partial class customer_010
+    [Migration("20200630050210_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -95,11 +95,7 @@ namespace MT.OnlineRestaurant.DataLayer.Migrations
                         .HasDefaultValueSql("('')")
                         .HasMaxLength(225);
 
-                    b.Property<string>("PasswordKey")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("('')")
-                        .HasMaxLength(225);
+                    b.Property<string>("PasswordKey");
 
                     b.Property<DateTime>("RecordTimeStamp")
                         .ValueGeneratedOnAdd()
@@ -111,11 +107,13 @@ namespace MT.OnlineRestaurant.DataLayer.Migrations
                         .HasColumnType("datetime")
                         .HasDefaultValueSql("((0))");
 
-                    b.Property<int>("Totalorders");
+                    b.Property<int>("UserCreated")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("((0))");
 
-                    b.Property<int>("UserCreated");
-
-                    b.Property<int>("UserModified");
+                    b.Property<int>("UserModified")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("((0))");
 
                     b.HasKey("Id");
 

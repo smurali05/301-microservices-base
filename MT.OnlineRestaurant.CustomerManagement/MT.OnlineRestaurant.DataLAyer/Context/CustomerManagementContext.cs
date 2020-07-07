@@ -27,7 +27,8 @@ namespace MT.OnlineRestaurant.DataLayer.Context
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=tcp:devserver4.database.windows.net;Initial Catalog=CustomerManagement;Persist Security Info=False;User ID=M1043027;Password=Azuredb1@;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+                //optionsBuilder.UseSqlServer("Server=tcp:devserver4.database.windows.net;Initial Catalog=CustomerManagement;Persist Security Info=False;User ID=M1043027;Password=Azuredb1@;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+                optionsBuilder.UseSqlServer("Server = vs2019vm\\SQLEXPRESS; Initial Catalog = CustomerManagement; Persist Security Info = False; Integrated security = True; MultipleActiveResultSets = False; Encrypt = True; TrustServerCertificate = True; Connection Timeout = 30;");
             }
         }
 

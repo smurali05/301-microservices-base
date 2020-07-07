@@ -11,6 +11,7 @@ using MT.OnlineRestaurant.DataLayer;
 using MT.OnlineRestaurant.DataLayer.Context;
 using MT.OnlineRestaurant.DataLayer.interfaces;
 using MT.OnlineRestaurant.Logging;
+using MT.OnlineRestaurant.OrderAPI.MessageManagement;
 using MT.OnlineRestaurant.ValidateUserHandler;
 using Swashbuckle.AspNetCore.Swagger;
 
@@ -63,6 +64,16 @@ namespace MT.OnlineRestaurant.OrderAPI
             services.AddTransient<IBookYourTableBusiness, BookYourTableBusiness>();
             services.AddTransient<IBookYourTableRepository, BookYourTableRepository>();
             services.AddTransient<ILogService, LoggerService>();
+            services.AddTransient<IServiceBusTopicSender, ServiceBusTopicSender>();
+            services.AddTransient<IServiceBusOutOfStockReceiver, ServiceBusOutOfStockReceiver>();
+            services.AddTransient<IServiceBusTopicReceiver, ServiceBusTopicReceiver>();
+
+            services.AddTransient<ICartActions, CartActions>();
+            services.AddTransient<IGetCartItems, GetCartItems>();
+
+            //container.Register<ICartActions, CartActions>();
+            //container.Register<IGetCartItems, GetCartItems>();
+
             // Auto Mapper Configurations
             var mappingConfig = new MapperConfiguration(mc =>
             {
@@ -87,7 +98,7 @@ namespace MT.OnlineRestaurant.OrderAPI
             services.AddMvc()
                     .AddMvcOptions(options =>
                     {
-                        options.Filters.Add(new Authorization());
+                        //options.Filters.Add(new Authorization());
                         options.Filters.Add(new LoggingFilter(Configuration.GetConnectionString("DatabaseConnectionString")));
                         options.Filters.Add(new ErrorHandlingFilter(Configuration.GetConnectionString("DatabaseConnectionString")));
                     });

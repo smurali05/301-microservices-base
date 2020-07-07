@@ -2,6 +2,7 @@
 using Moq;
 using MT.OnlineRestaurant.BusinessEntities;
 using MT.OnlineRestaurant.BusinessLayer;
+using MT.OnlineRestaurant.BusinessLayer.AzureBusServices;
 using MT.OnlineRestaurant.SearchManagement.Controllers;
 using NUnit.Framework;
 using System.Collections.Generic;
@@ -74,10 +75,11 @@ namespace MT.OnlineRestaurant.UT
                 user_Comments = "",
             });
             var mockOrder = new Mock<IRestaurantBusiness>();
+            var mockIServiceBusTopicSender = new Mock<IServiceBusTopicSender>();
             mockOrder.Setup(x => x.GetRestaurantRating(1)).Returns(restaurantRatings.AsQueryable());
 
             //Act
-            var searchController = new SearchController(mockOrder.Object);
+            var searchController = new SearchController(mockOrder.Object, mockIServiceBusTopicSender.Object);
             var data = searchController.GetResturantRating(1);
             var okObjectResult = data as OkObjectResult;
 

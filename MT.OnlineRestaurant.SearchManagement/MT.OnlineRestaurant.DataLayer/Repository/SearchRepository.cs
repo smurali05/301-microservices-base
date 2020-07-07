@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using MT.OnlineRestaurant.DataLayer.EntityFrameWorkModel;
-using System.Linq;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+using MoreLinq;
 using MT.OnlineRestaurant.DataLayer.DataEntity;
-using Microsoft.Extensions.Options;
+using MT.OnlineRestaurant.DataLayer.EntityFrameWorkModel;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using BusinessEntities = MT.OnlineRestaurant.BusinessEntities;
 
 namespace MT.OnlineRestaurant.DataLayer.Repository
 {
@@ -182,7 +184,142 @@ namespace MT.OnlineRestaurant.DataLayer.Repository
 
             List<RestaurantSearchDetails> restaurantInfo = new List<RestaurantSearchDetails>();
             restaurantInfo = restaurantsBasedOnLocation.Intersect(searchedRestaurantBasedOnRating).ToList<RestaurantSearchDetails>();
+
             return restaurantInfo.AsQueryable();
+        }
+
+        /// <summary>
+        /// Multiparameter Search for restuarant
+        /// </summary>
+        /// <param name="searchDetails"></param>
+        /// <returns>IQueryable<RestaurantSearchDetails></returns>
+        public IQueryable<RestaurantSearchDetails> MultiParameterSearchForRestaurant(SearchForRestautrant searchDetails)
+        {
+            List<RestaurantSearchDetails> restaurants = new List<RestaurantSearchDetails>();
+            try
+            {
+                var res = db.TblRestaurant.Include(x => x.TblRating);
+
+                var restaurantFilter = (from restaurant in res
+                                        join location in db.TblLocation on restaurant.TblLocationId equals location.Id
+                                        select new { TblRestaurant = restaurant, TblLocation = location });
+
+
+                if (searchDetails.search != null)
+                {
+                    if (!string.IsNullOrEmpty(searchDetails.search.cuisine))
+                    {
+                        restaurantFilter = (from filteredRestaurant in restaurantFilter
+                                            join offer in db.TblOffer on filteredRestaurant.TblRestaurant.Id equals offer.TblRestaurantId
+                                            join menu in db.TblMenu on offer.TblMenuId equals menu.Id
+                                            join cuisine in db.TblCuisine on menu.TblCuisineId equals cuisine.Id
+                                            where cuisine.Cuisine.Contains(searchDetails.search.cuisine)
+                                            select filteredRestaurant).Distinct();
+                    }
+                    if (!string.IsNullOrEmpty(searchDetails.search.Menu))
+                    {
+                        restaurantFilter = (from filteredRestaurant in restaurantFilter
+                                            join offer in db.TblOffer on filteredRestaurant.TblRestaurant.Id equals offer.TblRestaurantId
+                                            join menu in db.TblMenu on offer.TblMenuId equals menu.Id
+                                            where menu.Item.Contains(searchDetails.search.Menu)
+                                            select filteredRestaurant).Distinct();
+                    }
+
+                    if (searchDetails.search.budget > 0)
+
+                    {
+                        restaurantFilter = (from filteredRestaurant in restaurantFilter
+                                            join offer in db.TblOffer on filteredRestaurant.TblRestaurant.Id equals offer.TblRestaurantId
+                                            join menu in db.TblMenu on offer.TblMenuId equals menu.Id
+                                            where offer.Price > searchDetails.search.budget
+                                            select filteredRestaurant).Distinct();
+                    }
+                    if (searchDetails.search.rating > 0)
+                    {
+                        restaurantFilter = (from filteredRestaurant in restaurantFilter
+                                            join rating in db.TblRating on filteredRestaurant.TblRestaurant.Id equals rating.TblRestaurantId
+                                            where rating.Rating.Contains(searchDetails.search.rating.ToString())
+                                            select filteredRestaurant).Distinct();
+                    }
+                }
+                if (searchDetails.location != null)
+                {
+                    if (!string.IsNullOrEmpty(searchDetails.location.restaurant_Name))
+                    {
+                        restaurantFilter = restaurantFilter.Where(a => a.TblRestaurant.Name.Contains(searchDetails.location.restaurant_Name));
+
+                    }
+
+                    if (!(searchDetails.location.xaxis <= 0) || (searchDetails.location.yaxis < 0))
+                    {
+                        foreach (var place in restaurantFilter)
+                        {
+                            double distance = Distance(searchDetails.location.xaxis, searchDetails.location.yaxis, (double)place.TblLocation.X, (double)place.TblLocation.Y);
+                            if (distance < int.Parse(searchDetails.location.distance.ToString()))
+                            {
+                                RestaurantSearchDetails tblRestaurant = new RestaurantSearchDetails
+                                {
+                                    restaurant_ID = place.TblRestaurant.Id,
+                                    restaurant_Name = place.TblRestaurant.Name,
+                                    restaurant_Address = place.TblRestaurant.Address,
+                                    restaurant_PhoneNumber = place.TblRestaurant.ContactNo,
+                                    restraurant_Website = place.TblRestaurant.Website,
+                                    closing_Time = place.TblRestaurant.CloseTime,
+                                    opening_Time = place.TblRestaurant.OpeningTime,
+                                    xaxis = (double)place.TblLocation.X,
+                                    yaxis = (double)place.TblLocation.Y
+                                };
+                                try
+                                {
+                                    tblRestaurant.rating = place.TblRestaurant.TblRating.Average(x => Convert.ToDecimal(x.Rating));
+                                }
+                                catch
+                                {
+                                    tblRestaurant.rating = 0;
+                                }
+                                restaurants.Add(tblRestaurant);
+                            }
+                        }
+
+                    }
+                    else
+                    {
+                        foreach (var item in restaurantFilter)
+                        {
+                            RestaurantSearchDetails tblRestaurant = new RestaurantSearchDetails
+                            {
+                                restaurant_ID = item.TblRestaurant.Id,
+                                restaurant_Name = item.TblRestaurant.Name,
+                                restaurant_Address = item.TblRestaurant.Address,
+                                restaurant_PhoneNumber = item.TblRestaurant.ContactNo,
+                                restraurant_Website = item.TblRestaurant.Website,
+                                closing_Time = item.TblRestaurant.CloseTime,
+                                opening_Time = item.TblRestaurant.OpeningTime,
+                                xaxis = (double)item.TblLocation.X,
+                                yaxis = (double)item.TblLocation.Y
+
+                            };
+
+                            try
+                            {
+                                tblRestaurant.rating = item.TblRestaurant.TblRating.Average(x => Convert.ToDecimal(x.Rating));
+                            }
+                            catch
+                            {
+                                tblRestaurant.rating = 0;
+                            }
+                            restaurants.Add(tblRestaurant);
+                        }
+                    }
+                }
+                
+                return restaurants.DistinctBy(x => x.restaurant_Name).OrderByDescending(x => x.rating).AsQueryable();
+
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
 
@@ -200,7 +337,7 @@ namespace MT.OnlineRestaurant.DataLayer.Repository
             db.SaveChanges();
 
         }
-        public TblMenu ItemInStock(int restaurantID,int menuID)
+        public TblMenu ItemInStock(int restaurantID, int menuID)
         {
             try
             {
@@ -227,13 +364,59 @@ namespace MT.OnlineRestaurant.DataLayer.Repository
                                    quantity = menu.quantity
                                }).FirstOrDefault();
                 }
-                    return menuObj;
-            }            
+                return menuObj;
+            }
             catch (Exception ex)
             {
                 throw ex;
             }
         }
+
+        public List<TblMenu> UpdatestockCount(List<BusinessEntities.StockInformation> stocks)
+        {
+            List<TblMenu> tblMenus = new List<TblMenu>();
+            foreach (var stock in stocks)
+            {
+
+                if (db != null)
+                {
+                    //var menuObj = (from offer in db.TblOffer
+                    //           join menu in db.TblMenu
+                    //           on offer.TblMenuId equals menu.Id
+                    //           where menu.Id == stock.MenuId
+                    //           select new TblMenu
+                    //           {
+                    //               quantity = menu.quantity
+                    //           }).FirstOrDefault();
+                    var menuObj = db.TblMenu.Where(p => p.Id == stock.MenuId).FirstOrDefault();
+                    menuObj.quantity = menuObj.quantity - stock.Quantity;
+                    if (menuObj.quantity < 0)
+                    {
+                        menuObj.quantity = 0;
+                    }
+                    db.TblMenu.Update(menuObj);
+                    db.SaveChanges();
+                    tblMenus.Add(menuObj);
+
+                }
+            }
+            return tblMenus;
+        }
+
+
+        public int UpdateStockPrice(BusinessEntities.StockPrice stock)
+        {
+            TblOffer OfferObj = new TblOffer();
+            if (db != null)
+            {
+                OfferObj = db.TblOffer.Where(p => p.TblMenuId == stock.MenuId).FirstOrDefault();
+                OfferObj.Price = stock.ChangedPrice;
+                db.TblOffer.Update(OfferObj);
+                return db.SaveChanges();
+            }
+            return 0;
+        }
+
         #endregion
 
         #region private methods
@@ -243,10 +426,10 @@ namespace MT.OnlineRestaurant.DataLayer.Repository
             try
             {
                 var restaurantFilter = (from restaurant in db.TblRestaurant
-                                      join location in db.TblLocation on restaurant.TblLocationId equals location.Id
-                                      select new { TblRestaurant = restaurant, TblLocation = location });
+                                        join location in db.TblLocation on restaurant.TblLocationId equals location.Id
+                                        select new { TblRestaurant = restaurant, TblLocation = location });
 
-                if(!string.IsNullOrEmpty(searchList.cuisine))
+                if (!string.IsNullOrEmpty(searchList.cuisine))
                 {
                     restaurantFilter = (from filteredRestaurant in restaurantFilter
                                         join offer in db.TblOffer on filteredRestaurant.TblRestaurant.Id equals offer.TblRestaurantId
@@ -255,7 +438,7 @@ namespace MT.OnlineRestaurant.DataLayer.Repository
                                         where cuisine.Cuisine.Contains(searchList.cuisine)
                                         select filteredRestaurant).Distinct();
                 }
-                if(!string.IsNullOrEmpty(searchList.Menu))
+                if (!string.IsNullOrEmpty(searchList.Menu))
                 {
                     restaurantFilter = (from filteredRestaurant in restaurantFilter
                                         join offer in db.TblOffer on filteredRestaurant.TblRestaurant.Id equals offer.TblRestaurantId
@@ -264,7 +447,7 @@ namespace MT.OnlineRestaurant.DataLayer.Repository
                                         select filteredRestaurant).Distinct();
                 }
 
-                if(searchList.rating > 0)
+                if (searchList.rating > 0)
                 {
                     restaurantFilter = (from filteredRestaurant in restaurantFilter
                                         join rating in db.TblRating on filteredRestaurant.TblRestaurant.Id equals rating.TblRestaurantId
@@ -275,7 +458,7 @@ namespace MT.OnlineRestaurant.DataLayer.Repository
                 {
                     RestaurantSearchDetails restaurant = new RestaurantSearchDetails
                     {
-                        restauran_ID = item.TblRestaurant.Id,
+                        restaurant_ID = item.TblRestaurant.Id,
                         restaurant_Name = item.TblRestaurant.Name,
                         restaurant_Address = item.TblRestaurant.Address,
                         restaurant_PhoneNumber = item.TblRestaurant.ContactNo,
@@ -300,17 +483,17 @@ namespace MT.OnlineRestaurant.DataLayer.Repository
             try
             {
 
-                 var restaurantInfo = (from restaurant in db.TblRestaurant
-                                          join location in db.TblLocation on restaurant.TblLocationId equals location.Id
-                                          select new { TblRestaurant = restaurant, TblLocation = location });
+                var restaurantInfo = (from restaurant in db.TblRestaurant
+                                      join location in db.TblLocation on restaurant.TblLocationId equals location.Id
+                                      select new { TblRestaurant = restaurant, TblLocation = location });
 
-                if(!string.IsNullOrEmpty(location_Details.restaurant_Name))
+                if (!string.IsNullOrEmpty(location_Details.restaurant_Name))
                 {
                     restaurantInfo = restaurantInfo.Where(a => a.TblRestaurant.Name.Contains(location_Details.restaurant_Name));
 
                 }
 
-                if(!(double.IsNaN(location_Details.xaxis)) && !(double.IsNaN(location_Details.yaxis)))
+                if (!(double.IsNaN(location_Details.xaxis)) && !(double.IsNaN(location_Details.yaxis)))
                 {
                     foreach (var place in restaurantInfo)
                     {
@@ -319,7 +502,7 @@ namespace MT.OnlineRestaurant.DataLayer.Repository
                         {
                             RestaurantSearchDetails tblRestaurant = new RestaurantSearchDetails
                             {
-                                restauran_ID = place.TblRestaurant.Id,
+                                restaurant_ID = place.TblRestaurant.Id,
                                 restaurant_Name = place.TblRestaurant.Name,
                                 restaurant_Address = place.TblRestaurant.Address,
                                 restaurant_PhoneNumber = place.TblRestaurant.ContactNo,

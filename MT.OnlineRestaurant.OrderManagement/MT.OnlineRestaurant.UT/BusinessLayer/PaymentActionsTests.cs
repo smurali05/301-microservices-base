@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using AutoMapper;
+using Moq;
 using MT.OnlineRestaurant.BusinessEntities;
 using MT.OnlineRestaurant.BusinessLayer;
 using MT.OnlineRestaurant.DataLayer.Context;
@@ -21,9 +22,10 @@ namespace MT.OnlineRestaurant.UT.BusinessLayer
                 CustomerId = 1
             };
 
-            var mockOrder = new Mock<IPaymentDbAccess>();            
+            var mockOrder = new Mock<IPaymentDbAccess>();
+            var mockIMapper = new Mock<IMapper>();
             mockOrder.Setup(x => x.MakePaymentForOrder(It.IsAny<TblOrderPayment>())).Returns(1);
-            var orderFoodActionObject = new PaymentActions(mockOrder.Object);
+            var orderFoodActionObject = new PaymentActions(mockOrder.Object, mockIMapper.Object);
             var data = orderFoodActionObject.MakePaymentForOrder(orderPaymentDetails);
 
             Assert.AreEqual(1, data);
@@ -40,8 +42,9 @@ namespace MT.OnlineRestaurant.UT.BusinessLayer
             };
 
             var mockOrder = new Mock<IPaymentDbAccess>();
+            var mockMapper = new Mock<IMapper>();
             mockOrder.Setup(x => x.UpdatePaymentAndOrderStatus(It.IsAny<TblOrderPayment>())).Returns(1);
-            var orderFoodActionObject = new PaymentActions(mockOrder.Object);
+            var orderFoodActionObject = new PaymentActions(mockOrder.Object, mockMapper.Object);
             var data = orderFoodActionObject.UpdatePaymentAndOrderStatus(orderPaymentDetails);
 
             Assert.AreEqual(1, data);

@@ -6,6 +6,8 @@ using MT.OnlineRestaurant.DataLayer.EntityFrameWorkModel;
 using MT.OnlineRestaurant.DataLayer.DataEntity;
 using System.Text;
 using System.Linq;
+using AutoMapper;
+using MT.OnlineRestaurant.BusinessLayer.AzureBusServices;
 
 namespace MT.OnlineRestaurant.BusinessLayer
 {
@@ -13,9 +15,13 @@ namespace MT.OnlineRestaurant.BusinessLayer
     {
         ISearchRepository search_Repository;
         private readonly string connectionstring;
-        public RestaurantBusiness(ISearchRepository _searchRepository)
+        private readonly IMapper _mapper;
+        private readonly IServiceBusSenderOutOfStock _serviceBusSenderOutOfStock;
+        public RestaurantBusiness(ISearchRepository _searchRepository, IMapper mapper, IServiceBusSenderOutOfStock serviceBusSenderOutOfStock)
         {
             search_Repository = _searchRepository;
+            _mapper = mapper;
+            _serviceBusSenderOutOfStock = serviceBusSenderOutOfStock;
         }
 
         public IQueryable<RestaurantMenu> GetRestaurantMenus(int restaurantID)
@@ -141,7 +147,7 @@ namespace MT.OnlineRestaurant.BusinessLayer
                 {
                     RestaurantInformation restaurant_Details = new RestaurantInformation
                     {
-                        restaurant_ID = restaurants.restauran_ID,
+                        restaurant_ID = restaurants.restaurant_ID,
                         restaurant_Name = restaurants.restaurant_Name,
                         restaurant_Address = restaurants.restaurant_Address,
                         restaurant_ContactNo = restaurants.restaurant_PhoneNumber,
@@ -181,7 +187,7 @@ namespace MT.OnlineRestaurant.BusinessLayer
                     {
                         RestaurantInformation restaurant_Details = new RestaurantInformation
                         {
-                            restaurant_ID = restaurants.restauran_ID,
+                            restaurant_ID = restaurants.restaurant_ID,
                             restaurant_Name = restaurants.restaurant_Name,
                             restaurant_Address = restaurants.restaurant_Address,
                             restaurant_ContactNo = restaurants.restaurant_PhoneNumber,
@@ -204,7 +210,26 @@ namespace MT.OnlineRestaurant.BusinessLayer
 
         public IQueryable<RestaurantInformation> SearchForRestaurant(SearchForRestaurant searchDetails)
         {
-            throw new NotImplementedException();
+            try
+            {
+                List<RestaurantInformation> RestaurantInfo = new List<RestaurantInformation>(0);
+
+                // SearchForRestautrant searchInfo = new SearchForRestautrant();
+                var searchinfo = _mapper.Map<SearchForRestautrant>(searchDetails);
+
+                var Restaurant = search_Repository.MultiParameterSearchForRestaurant(searchinfo).ToList();
+                foreach (var item in Restaurant)
+                {
+                    var RestaurantInformation = _mapper.Map<RestaurantInformation>(item);
+                    RestaurantInfo.Add(RestaurantInformation);
+                }
+
+                return RestaurantInfo.AsQueryable();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -226,12 +251,38 @@ namespace MT.OnlineRestaurant.BusinessLayer
                 search_Repository.RestaurantRating(rating);
             }
         }
-        public int ItemInStock(int restaurantID,int menuID)
+        public int ItemInStock(int restaurantID, int menuID)
         {
             RestaurantMenu menuObj = new RestaurantMenu();
-            TblMenu menu = search_Repository.ItemInStock(restaurantID,menuID);
-            menuObj.quantity = menu.quantity;           
-             return 0;
+            TblMenu menu = search_Repository.ItemInStock(restaurantID, menuID);
+            menuObj.quantity = menu.quantity;
+            return 0;
+        }
+
+        public List<Menu> UpdateStockCount(List<StockInformation> stocks)
+        {
+            List<Menu> items = new List<Menu>();
+            List<TblMenu> menus = search_Repository.UpdatestockCount(stocks);
+            foreach (var menu in menus)
+            {
+                StockInformation stock = new StockInformation();
+                stock.MenuId = menu.Id;
+                stock.OrderId = stocks.FirstOrDefault().OrderId;
+                stock.Quantity = menu.quantity;
+                if (stock.Quantity == 0)
+                {
+                    _serviceBusSenderOutOfStock.SendMessage(stock);
+                }
+                var item = _mapper.Map<Menu>(menu);
+                items.Add(item);
+            }
+            return items;
+        }
+
+        public int UpdateStockPrice(StockPrice stock)
+        {
+            int result = search_Repository.UpdateStockPrice(stock);
+            return result;
         }
     }
 }

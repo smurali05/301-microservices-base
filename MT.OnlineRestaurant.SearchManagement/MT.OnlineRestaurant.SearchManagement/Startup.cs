@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MT.OnlineRestaurant.BusinessLayer;
+using MT.OnlineRestaurant.BusinessLayer.AzureBusServices;
 using MT.OnlineRestaurant.DataLayer.EntityFrameWorkModel;
 using MT.OnlineRestaurant.DataLayer.Repository;
 using MT.OnlineRestaurant.Logging;
@@ -58,20 +60,34 @@ namespace MT.OnlineRestaurant.SearchManagement
 
             //services.Configure<ConnectionString>(Configuration.GetSection("ConnectionString"));
 
+            var mappingConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new AutoMapping());
+            });
+
+            IMapper mapper = mappingConfig.CreateMapper();
+            services.AddSingleton(mapper);
+
             services.AddDbContext<RestaurantManagementContext>(options =>
                options.UseSqlServer(Configuration.GetConnectionString("DatabaseConnectionString"),
                b => b.MigrationsAssembly("MT.OnlineRestaurant.DataLayer")));
 
+
             services.AddMvc()
                     .AddMvcOptions(options =>
                     {
-                        options.Filters.Add(new Authorization());
+                        //options.Filters.Add(new Authorization());
                         //options.Filters.Add(new LoggingFilter(Configuration["ConnectionString:DatabaseConnectionString"]));
                         //options.Filters.Add(new ErrorHandlingFilter(Configuration["ConnectionString:DatabaseConnectionString"]));
                         options.Filters.Add(new LoggingFilter(Configuration.GetConnectionString("DatabaseConnectionString")));
                         options.Filters.Add(new ErrorHandlingFilter(Configuration.GetConnectionString("DatabaseConnectionString")));
 
                     });
+
+            services.AddTransient<IRestaurantBusiness, RestaurantBusiness>();
+            services.AddTransient<ISearchRepository, SearchRepository>();
+            services.AddTransient<IServiceBusSenderOutOfStock, ServiceBusSenderOutOfStock>();
+            services.AddTransient<IServiceBusTopicSender, ServiceBusTopicSender>();
 
             services.AddTransient<IRestaurantBusiness, RestaurantBusiness>();
             services.AddTransient<ISearchRepository, SearchRepository>();

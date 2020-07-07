@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MT.OnlineRestaurant.BusinessEntities;
 using MT.OnlineRestaurant.BusinessLayer;
-
+using MT.OnlineRestaurant.BusinessLayer.AzureBusServices;
 
 namespace MT.OnlineRestaurant.SearchManagement.Controllers
 {
@@ -16,10 +16,12 @@ namespace MT.OnlineRestaurant.SearchManagement.Controllers
     [Route("api")]
     public class SearchController : Controller
     {
-        private readonly IRestaurantBusiness business_Repo;
-        public SearchController(IRestaurantBusiness _business_Repo)
+        private readonly IRestaurantBusiness business_Repo; 
+        private readonly IServiceBusTopicSender _serviceBusTopicSender;
+        public SearchController(IRestaurantBusiness _business_Repo, IServiceBusTopicSender serviceBusTopicSender)
         {
             business_Repo = _business_Repo;
+            _serviceBusTopicSender = serviceBusTopicSender;
         }
         [HttpGet]
         [Route("ResturantDetail")]
@@ -135,6 +137,19 @@ namespace MT.OnlineRestaurant.SearchManagement.Controllers
                 return Ok(restaurantID);
             }
             return this.StatusCode((int)HttpStatusCode.InternalServerError, "error");
+        }
+
+        [HttpPut]
+        [Route("UpdateStockPrice")]
+        public async Task<IActionResult> UpdateStockPrice(StockPrice stock)
+        {
+            int queryresult = business_Repo.UpdateStockPrice(stock);
+            if (queryresult > 0)
+            {
+                await _serviceBusTopicSender.SendMessage(stock);
+                return this.Ok("The StockPrice is now changed to Rs:" + stock.ChangedPrice);
+            }
+            return this.BadRequest("Unable To Update Stock Price");
         }
     }
 }

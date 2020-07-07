@@ -3,7 +3,10 @@ using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using MT.OnlineRestaurant.BusinessEntities;
 using MT.OnlineRestaurant.BusinessLayer.interfaces;
+using MT.OnlineRestaurant.OrderAPI.MessageManagement;
 using MT.OnlineRestaurant.OrderAPI.ModelValidators;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 #endregion
 
 namespace MT.OnlineRestaurant.OrderAPI.Controllers
@@ -15,13 +18,15 @@ namespace MT.OnlineRestaurant.OrderAPI.Controllers
     public class PaymentController : Controller
     {
         private readonly IPaymentActions _paymentActions;
+        private readonly IServiceBusTopicSender _serviceBusTopicSender;
         /// <summary>
         /// Inject buisiness layer dependency
         /// </summary>
         /// <param name="paymentActions"></param>
-        public PaymentController(IPaymentActions paymentActions)
+        public PaymentController(IPaymentActions paymentActions, IServiceBusTopicSender serviceBusTopicSender)
         {
             _paymentActions = paymentActions;
+            _serviceBusTopicSender = serviceBusTopicSender;
         }
 
         /// <summary>
@@ -31,23 +36,34 @@ namespace MT.OnlineRestaurant.OrderAPI.Controllers
         /// <returns>Payment status</returns>
         [HttpPost]
         [Route("api/MakePayment")]
-        public IActionResult MakePayment(PaymentEntity paymentEntity)
+        public async Task<IActionResult> MakePayment(PaymentEntity paymentEntity)
         {
-            PaymentEntityValidator paymentEntityValidator = new PaymentEntityValidator();
-            ValidationResult validationResult = paymentEntityValidator.Validate(paymentEntity);
-            if (!validationResult.IsValid)
+            var items = _paymentActions.CheckIfOrderOutOfStock(paymentEntity.OrderId);
+            if (items != null && items.Count == 0)
             {
-                return BadRequest(validationResult.ToString("; "));
+                PaymentEntityValidator paymentEntityValidator = new PaymentEntityValidator();
+                ValidationResult validationResult = paymentEntityValidator.Validate(paymentEntity);
+                if (!validationResult.IsValid)
+                {
+                    return BadRequest(validationResult.ToString("; "));
+                }
+                else
+                {
+                    var result = _paymentActions.MakePaymentForOrder(paymentEntity);
+                    if (result == 0)
+                    {
+                        return BadRequest("Payment failed, Please try again later");
+                    }
+                    List<StockInformation> stock = new List<StockInformation>();
+                    stock = _paymentActions.GetOrderDetails(paymentEntity.OrderId);
+                    await _serviceBusTopicSender.SendMessage(stock);
+                }
+                return Ok("Payment is successful");
             }
             else
             {
-                var result = _paymentActions.MakePaymentForOrder(paymentEntity);
-                if (result == 0)
-                {
-                    return BadRequest("Payment failed, Please try again later");
-                }
+                return BadRequest("Few Items are Out Of Stock");
             }
-            return Ok("Payment is successful");
         }
 
         /// <summary>

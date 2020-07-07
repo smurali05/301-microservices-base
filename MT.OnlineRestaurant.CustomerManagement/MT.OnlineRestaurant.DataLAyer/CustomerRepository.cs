@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace MT.OnlineRestaurant.DataLayer
 {
-    public class CustomerRepository:ICustomerRepository
+    public class CustomerRepository : ICustomerRepository
     {
         private readonly IOptions<ApplicationString> _connectionStrings;
 
@@ -14,21 +14,23 @@ namespace MT.OnlineRestaurant.DataLayer
         {
             _connectionStrings = dbSettings;
             //_context = new CustomerManagementContext(_connectionStrings.Value.DB);
-            _context = new CustomerManagementContext("Server=tcp:devserver4.database.windows.net;Initial Catalog=CustomerManagement;User ID=M1043027;Password=Azuredb1@;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+            //_context = new CustomerManagementContext("Server=tcp:devserver4.database.windows.net;Initial Catalog=CustomerManagement;User ID=M1043027;Password=Azuredb1@;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+            _context = new CustomerManagementContext("Server=vs2019vm\\SQLEXPRESS;Initial Catalog=CustomerManagement;Persist Security Info=False;Integrated security=True;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;");
+
         }
-        public int UserRegisteration(TblCustomer user,byte[] passwordSalt)
+        public int UserRegisteration(TblCustomer user, byte[] passwordSalt)
         {
             _context.TblCustomer.Add(new TblCustomer
             {
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Password = user.Password,
-                PasswordKey= passwordSalt.ToString(),
+                PasswordKey = passwordSalt.ToString(),
                 Email = user.Email,
                 MobileNumber = user.MobileNumber,
                 Address = user.Address,
                 UserCreated = 2,
-                RecordTimeStamp=DateTime.Now,
+                RecordTimeStamp = DateTime.Now,
                 Active = true
             });
             return _context.SaveChanges();
@@ -73,18 +75,18 @@ namespace MT.OnlineRestaurant.DataLayer
         }
         public int UpdateFromReceivedMessage(int CustomerID)
         {
-          
-                var user = _context.TblCustomer.Find(CustomerID);
-                user.Totalorders = user.Totalorders + 1;
-                _context.TblCustomer.Update(user);
-                return _context.SaveChanges();
+
+            var user = _context.TblCustomer.Find(CustomerID);
+            user.Totalorders = user.Totalorders + 1;
+            _context.TblCustomer.Update(user);
+            return _context.SaveChanges();
         }
         /// <summary>
         /// Update Customer Details
         /// </summary>
         /// <param name="customerDetails"></param>
         /// <returns></returns>
-        public int DeactivateCustomer(int customerId,bool isActive)
+        public int DeactivateCustomer(int customerId, bool isActive)
         {
             var user = _context.TblCustomer.Find(customerId);
 
@@ -96,7 +98,7 @@ namespace MT.OnlineRestaurant.DataLayer
             user.RecordTimeStamp = DateTime.Now;
             // update password if it was entered
             _context.TblCustomer.Update(user);
-           return _context.SaveChanges();         
+            return _context.SaveChanges();
         }
     }
 }

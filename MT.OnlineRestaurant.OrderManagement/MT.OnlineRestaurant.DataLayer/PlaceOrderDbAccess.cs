@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using MT.OnlineRestaurant.BusinessEntities;
+using MT.OnlineRestaurant.BusinessEntities.ServiceModels;
 using MT.OnlineRestaurant.DataLayer.Context;
 using MT.OnlineRestaurant.DataLayer.interfaces;
 using System;
@@ -45,6 +47,53 @@ namespace MT.OnlineRestaurant.DataLayer
         public IQueryable<TblFoodOrder> GetReports(int customerId)
         {
             return _context.TblFoodOrder.Where(fo => fo.TblCustomerId == customerId);
+        }
+
+        /// <summary>
+        /// Update Stock price
+        /// </summary>
+        /// <param name="stocks"></param>
+        /// <returns></returns>
+        public IQueryable<TblFoodOrderMapping> UpdateStockPrice(StockPrice stocks)
+        {
+            try
+            {
+                List<TblFoodOrderMapping> tblFoodOrders = new List<TblFoodOrderMapping>();
+                var foodOrderMapping = _context.TblFoodOrderMapping.Where(p => p.TblMenuId == stocks.MenuId);
+                foreach (var item in foodOrderMapping)
+                {
+                    item.Price = stocks.ChangedPrice;
+                    _context.TblFoodOrderMapping.Update(item);
+
+                    tblFoodOrders.Add(item);
+                }
+                _context.SaveChanges();
+                return tblFoodOrders.AsQueryable();
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Item out of Stock
+        /// </summary>
+        /// <param name="stock"></param>
+        /// <returns></returns>
+        public IQueryable<TblFoodOrderMapping> UpdateOutOfStock(StockInformation stock)
+        {
+            List<TblFoodOrderMapping> tblFoodOrders = new List<TblFoodOrderMapping>();
+            var foodOrderMapping = _context.TblFoodOrderMapping.Where(p => p.TblMenuId == stock.MenuId);
+            foreach (var item in foodOrderMapping)
+            {
+                item.IsItemOutOfStock = true;
+                _context.Update(item);
+
+                tblFoodOrders.Add(item);
+            }
+            _context.SaveChanges();
+            return tblFoodOrders.AsQueryable();
         }
     }
 }

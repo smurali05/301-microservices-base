@@ -11,4 +11,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.2.6" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MT.OnlineRestaurant.BusinessEntities\MT.OnlineRestaurant.BusinessEntities.csproj" />
+  </ItemGroup>
+
 </Project>

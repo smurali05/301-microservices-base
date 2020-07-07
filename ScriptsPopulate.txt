@@ -1,0 +1,116 @@
+USE [OrderManagement]
+GO
+
+INSERT INTO [dbo].[tblOrderStatus]
+           ([Status]
+           ,[UserCreated]
+           ,[UserModified]
+           ,[RecordTimeStamp]
+           ,[RecordTimeStampCreated])
+     VALUES
+           ('Active'
+           ,1
+           ,1
+           ,SYSDATETIME()
+           ,SYSDATETIME())
+
+INSERT INTO [dbo].[tblOrderStatus]
+([Status]
+,[UserCreated]
+,[UserModified]
+,[RecordTimeStamp]
+,[RecordTimeStampCreated])
+     VALUES
+           ('InProcess'
+           ,1
+           ,1
+           ,SYSDATETIME()
+           ,SYSDATETIME())
+
+INSERT INTO [dbo].[tblOrderStatus]
+           ([Status]
+           ,[UserCreated]
+           ,[UserModified]
+           ,[RecordTimeStamp]
+           ,[RecordTimeStampCreated])
+     VALUES
+           ('Completed'
+           ,1
+           ,1
+           ,SYSDATETIME()
+           ,SYSDATETIME())
+
+INSERT INTO [dbo].[tblOrderStatus]
+           ([Status]
+           ,[UserCreated]
+           ,[UserModified]
+           ,[RecordTimeStamp]
+           ,[RecordTimeStampCreated])
+     VALUES
+           ('Cancelled'
+           ,1
+           ,1
+           ,SYSDATETIME()
+           ,SYSDATETIME())
+
+GO
+
+USE [OrderManagement]
+GO
+
+INSERT INTO [dbo].[tblPaymentType]
+           ([Type]
+           ,[UserCreated]
+           ,[UserModified]
+           ,[RecordTimeStamp]
+           ,[RecordTimeStampCreated])
+     VALUES
+           ('Ordered'
+           ,1
+           ,1
+           ,SYSDATETIME()
+           ,SYSDATETIME())
+
+INSERT INTO [dbo].[tblPaymentType]
+           ([Type]
+           ,[UserCreated]
+           ,[UserModified]
+           ,[RecordTimeStamp]
+           ,[RecordTimeStampCreated])
+     VALUES
+           ('Recieved'
+           ,1
+           ,1
+           ,SYSDATETIME()
+           ,SYSDATETIME())
+
+		   INSERT INTO [dbo].[tblPaymentType]
+           ([Type]
+           ,[UserCreated]
+           ,[UserModified]
+           ,[RecordTimeStamp]
+           ,[RecordTimeStampCreated])
+     VALUES
+           ('Billed'
+           ,1
+           ,1
+           ,SYSDATETIME()
+           ,SYSDATETIME())
+
+		   INSERT INTO [dbo].[tblPaymentType]
+           ([Type]
+           ,[UserCreated]
+           ,[UserModified]
+           ,[RecordTimeStamp]
+           ,[RecordTimeStampCreated])
+     VALUES
+           ('Completed'
+           ,1
+           ,1
+           ,SYSDATETIME()
+           ,SYSDATETIME())
+
+GO
+
+
+

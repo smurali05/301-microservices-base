@@ -151,5 +151,29 @@ namespace MT.OnlineRestaurant.BusinessLayer
         //    }
         //    return false;
         //}
+
+        public List<FoodOrderMapping> UpdateStockPrice(StockPrice stocks)
+        {
+            List<FoodOrderMapping> Food = null;
+            var foodOrder = _placeOrderDbAccess.UpdateStockPrice(stocks);
+            foreach (var order in foodOrder)
+            {
+                var item = _mapper.Map<FoodOrderMapping>(foodOrder);
+                Food.Add(item);
+            }
+            return Food;
+        }
+
+        public List<FoodOrderMapping> UpdateOutOfStock(StockInformation stock)
+        {
+            List<FoodOrderMapping> foodOrderMappings = new List<FoodOrderMapping>();
+            var foodOrder = _placeOrderDbAccess.UpdateOutOfStock(stock);
+            foreach (var item in foodOrder)
+            {
+                var Order = _mapper.Map<FoodOrderMapping>(foodOrder);
+                foodOrderMappings.Add(Order);
+            }
+            return foodOrderMappings;
+        }
     }
 }

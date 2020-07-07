@@ -29,7 +29,9 @@ namespace MT.OnlineRestaurant.BusinessLayer
 
             CreateMap<ICollection<OrderMenus>, ICollection<TblFoodOrderMapping>>();
 
-            
+            CreateMap<OrdersInCart, TblFoodOrder>().ReverseMap();
+
+            CreateMap<TblFoodOrderMapping, FoodOrderMapping>().ReverseMap();
         }
     }
 }

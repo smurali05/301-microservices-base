@@ -9,5 +9,7 @@ namespace MT.OnlineRestaurant.BusinessLayer.interfaces
     {
         int MakePaymentForOrder(PaymentEntity orderPaymentDetails);
         int UpdatePaymentAndOrderStatus(UpdatePaymentEntity orderPaymentDetails);
+        List<FoodOrderMapping> CheckIfOrderOutOfStock(int OrderId);
+        List<StockInformation> GetOrderDetails(int OrderId);
     }
 }

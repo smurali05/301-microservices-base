@@ -14,7 +14,7 @@ namespace MT.OnlineRestaurant.DataLayer.interfaces
     /// </summary>
     public interface IBookYourTableRepository
     {
-        bool BookYourTable(TblTableOrder tblTableOrder);
+        int BookYourTable(TblTableOrder tblTableOrder);
 
         /// <summary>
         /// verifies whether the table is available for booking or not
@@ -29,6 +29,8 @@ namespace MT.OnlineRestaurant.DataLayer.interfaces
         /// <param name="tblTableOrder"></param>
         /// <returns></returns>
         bool UpdateBooking(TblTableOrder tblTableOrder);
+
+        int AddTableOrderMapping(TblTableOrderMapping orderMapping);
     }
     #endregion
 }

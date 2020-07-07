@@ -22,5 +22,8 @@ namespace MT.OnlineRestaurant.BusinessLayer
         void RestaurantRating(RestaurantRating restaurantRating);
         int ItemInStock(int restaurantID,int menuID);
 
+        int UpdateStockPrice(StockPrice stock);
+        List<Menu> UpdateStockCount(List<StockInformation> stocks);
+
     }
 }

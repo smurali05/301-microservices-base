@@ -9,5 +9,6 @@ namespace MT.OnlineRestaurant.DataLayer.DataEntity
         public int  rating { get; set; }
         public string cuisine { get; set; }
         public string  Menu { get; set; }
+        public int budget { get; set; }
     }
 }

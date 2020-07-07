@@ -15,6 +15,10 @@ namespace MT.OnlineRestaurant.DataLayer.Context
         public DateTime RecordTimeStamp { get; set; }
         public DateTime RecordTimeStampCreated { get; set; }
 
+        public int Quantity { get; set; }
+
+        public bool IsItemOutOfStock { get; set; }
+
         public virtual TblFoodOrder TblFoodOrder { get; set; }
     }
 }
