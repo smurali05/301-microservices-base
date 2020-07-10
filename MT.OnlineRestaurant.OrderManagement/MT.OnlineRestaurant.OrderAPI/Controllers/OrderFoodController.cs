@@ -13,6 +13,10 @@ using Microsoft.Azure.ServiceBus;
 using System.Text;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights;
+using MT.OnlineRestaurant.OrderAPI.MessageManagement;
+using System.Collections.Generic;
+using System.Threading;
+using MoreLinq;
 #endregion
 
 #region Namespace
@@ -26,14 +30,16 @@ namespace MT.OnlineRestaurant.OrderAPI.Controllers
     {
         private readonly IPlaceOrderActions _placeOrderActions;
         private readonly ILogService _logService;
+        private readonly IServiceBusTopicReceiver _serviceBusTopicReceiver;
         /// <summary>
         /// Inject buisiness layer dependency
         /// </summary>
         /// <param name="placeOrderActions">Instance of this interface is injected in startup</param>
-        public OrderFoodController(IPlaceOrderActions placeOrderActions, ILogService logService)
+        public OrderFoodController(IPlaceOrderActions placeOrderActions, ILogService logService, IServiceBusTopicReceiver serviceBusTopicReceiver)
         {
             _placeOrderActions = placeOrderActions;
             _logService = logService;
+            _serviceBusTopicReceiver = serviceBusTopicReceiver;
         }       
         /// <summary>
         /// POST api/OrderFood
@@ -58,6 +64,26 @@ namespace MT.OnlineRestaurant.OrderAPI.Controllers
             else
             {
                 var result = await Task<int>.Run(() => _placeOrderActions.PlaceOrder(orderEntity));
+                _serviceBusTopicReceiver.RegisterOnMessageHandlerAndReceiveMessages();
+
+                Thread.Sleep(10000);
+
+                Thread.Sleep(5000);
+
+            var orderMenus = await Task<List<OrderMenus>>.Run(() => _placeOrderActions.IsOrderPriceChanged(orderEntity, result));
+            var orderMenuDistinct = orderMenus.DistinctBy(x => x.MenuId.Value).ToList();
+
+            if (orderMenuDistinct.Count > 0)
+                {
+                    StringBuilder sb = new StringBuilder();
+                    foreach(var item in orderMenus)
+                    {
+                        sb.AppendLine(string.Format("MenuId: {0}, Changed Price: {1}", item.MenuId, item.Price));
+                    }
+
+                    return BadRequest(sb.ToString());
+                }
+
                 if (result == 0)
                 {
                     return BadRequest("Failed to place order, Please try again later");

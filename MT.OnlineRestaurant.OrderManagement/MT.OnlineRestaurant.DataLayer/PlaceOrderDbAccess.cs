@@ -95,5 +95,14 @@ namespace MT.OnlineRestaurant.DataLayer
             _context.SaveChanges();
             return tblFoodOrders.AsQueryable();
         }
+
+        public List<TblFoodOrderMapping> IsOrderPriceChanged(OrderEntity orderEntity, int orderId)
+        {
+            var orderFoods = _context.TblFoodOrderMapping
+                .Where(foodOrder =>
+                    orderEntity.OrderMenuDetails.Any(o => o.MenuId == foodOrder.TblMenuId && foodOrder.TblFoodOrderId == orderId && o.Price != foodOrder.Price)).ToList();
+
+            return orderFoods;
+        }
     }
 }

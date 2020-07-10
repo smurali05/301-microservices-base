@@ -43,13 +43,13 @@ namespace MT.OnlineRestaurant.OrderAPI.MessageManagement
                 MaxConcurrentCalls = 1,
                 AutoComplete = false
             };
+
             _subscriptionClient.RegisterMessageHandler(ProcessMessagesAsync, messageHandlerOptions);
 
         }
 
-        private async Task ProcessMessagesAsync(Message message, CancellationToken token)
+        public async Task ProcessMessagesAsync(Message message, CancellationToken token)
         {
-
             var stocks = JsonConvert.DeserializeObject<StockPrice>(Encoding.UTF8.GetString(message.Body));
             _processData.UpdateStockPrice(stocks);
             await _subscriptionClient.CompleteAsync(message.SystemProperties.LockToken);

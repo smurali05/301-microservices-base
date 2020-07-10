@@ -8,5 +8,7 @@ namespace MT.OnlineRestaurant.BusinessEntities
     {
         public int MenuId { get; set; }
         public decimal ChangedPrice { get; set; }
+
+        public int RestuarantId { get; set; }
     }
 }

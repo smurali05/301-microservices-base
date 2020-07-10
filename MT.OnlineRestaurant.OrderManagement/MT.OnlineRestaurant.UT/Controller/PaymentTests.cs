@@ -27,6 +27,7 @@ namespace MT.OnlineRestaurant.UT.Controller
 
             var mockOrder = new Mock<IPaymentActions>();
             var mockIServiceBus = new Mock<IServiceBusTopicSender>();
+            var mockISerivceREvie = new Mock<IServiceBusTopicReceiver>();
             mockOrder.Setup(x => x.MakePaymentForOrder(It.IsAny<PaymentEntity>())).Returns(1);
             var orderFoodActionObject = new PaymentController(mockOrder.Object, mockIServiceBus.Object);
             var data = orderFoodActionObject.MakePayment(paymentEntity);
@@ -48,6 +49,7 @@ namespace MT.OnlineRestaurant.UT.Controller
 
             var mockOrder = new Mock<IPaymentActions>();
             var mockIServiceBus = new Mock<IServiceBusTopicSender>();
+            var mockISerivceREvie = new Mock<IServiceBusTopicReceiver>();
             mockOrder.Setup(x => x.MakePaymentForOrder(It.IsAny<PaymentEntity>())).Returns(0);
             var orderFoodActionObject = new PaymentController(mockOrder.Object, mockIServiceBus.Object);
             var data = orderFoodActionObject.MakePayment(paymentEntity);
@@ -69,6 +71,7 @@ namespace MT.OnlineRestaurant.UT.Controller
 
             var mockOrder = new Mock<IPaymentActions>();
             var mockIServiceBus = new Mock<IServiceBusTopicSender>();
+            var mockISerivceREvie = new Mock<IServiceBusTopicReceiver>();
             mockOrder.Setup(x => x.MakePaymentForOrder(It.IsAny<PaymentEntity>())).Returns(1);
             var orderFoodActionObject = new PaymentController(mockOrder.Object, mockIServiceBus.Object);
             
@@ -90,6 +93,7 @@ namespace MT.OnlineRestaurant.UT.Controller
 
             var mockOrder = new Mock<IPaymentActions>();
             var mockIServiceBus = new Mock<IServiceBusTopicSender>();
+            var mockISerivceREvie = new Mock<IServiceBusTopicReceiver>();
             mockOrder.Setup(x => x.UpdatePaymentAndOrderStatus(It.IsAny<UpdatePaymentEntity>())).Returns(1);
             var orderFoodActionObject = new PaymentController(mockOrder.Object, mockIServiceBus.Object);
             
@@ -111,6 +115,7 @@ namespace MT.OnlineRestaurant.UT.Controller
 
             var mockOrder = new Mock<IPaymentActions>();
             var mockIServiceBus = new Mock<IServiceBusTopicSender>();
+            var mockISerivceREvie = new Mock<IServiceBusTopicReceiver>();
             var orderFoodActionObject = new PaymentController(mockOrder.Object, mockIServiceBus.Object);
             var data = orderFoodActionObject.UpdatePaymentAndOrderStatus(paymentEntity);
 

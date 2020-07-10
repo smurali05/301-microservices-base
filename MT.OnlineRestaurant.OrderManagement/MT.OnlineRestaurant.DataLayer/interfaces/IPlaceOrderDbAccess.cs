@@ -24,5 +24,6 @@ namespace MT.OnlineRestaurant.DataLayer.interfaces
         IQueryable<TblFoodOrderMapping> UpdateStockPrice(StockPrice stocks);
 
         IQueryable<TblFoodOrderMapping> UpdateOutOfStock(StockInformation stock);
+        List<TblFoodOrderMapping> IsOrderPriceChanged(OrderEntity entity, int orderId);
     }
 }

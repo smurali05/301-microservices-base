@@ -10,5 +10,7 @@ namespace MT.OnlineRestaurant.BusinessEntities
         public int PaymentTypeId { get; set; }
         public string Remarks { get; set; }
         public int CustomerId { get; set; }
+
+        public decimal Price { get; set; }
     }
 }

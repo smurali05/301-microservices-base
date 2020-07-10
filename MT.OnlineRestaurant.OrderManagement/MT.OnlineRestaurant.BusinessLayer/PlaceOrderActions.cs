@@ -24,7 +24,7 @@ namespace MT.OnlineRestaurant.BusinessLayer
 
         public PlaceOrderActions()
         {
-            
+
         }
 
         public PlaceOrderActions(IPlaceOrderDbAccess placeOrderDbAccess)
@@ -49,7 +49,7 @@ namespace MT.OnlineRestaurant.BusinessLayer
             DataLayer.Context.TblFoodOrder tblFoodOrder = _mapper.Map<DataLayer.Context.TblFoodOrder>(orderEntity);
 
             IList<DataLayer.Context.TblFoodOrderMapping> tblFoodOrderMappings = new List<DataLayer.Context.TblFoodOrderMapping>();
-    
+
             foreach (OrderMenus orderMenu in orderEntity.OrderMenuDetails)
             {
                 tblFoodOrderMappings.Add(new DataLayer.Context.TblFoodOrderMapping()
@@ -62,7 +62,28 @@ namespace MT.OnlineRestaurant.BusinessLayer
                 });
             }
 
-            return _placeOrderDbAccess.PlaceOrder(tblFoodOrder);            
+            tblFoodOrder.TblFoodOrderMapping = tblFoodOrderMappings;
+
+            return _placeOrderDbAccess.PlaceOrder(tblFoodOrder);
+        }
+
+        public List<OrderMenus> IsOrderPriceChanged(OrderEntity orderEntity, int orderId)
+        {
+            List<OrderMenus> orderMenus = new List<OrderMenus>();
+            var orderFoods = _placeOrderDbAccess.IsOrderPriceChanged(orderEntity, orderId);
+            if (orderFoods.Count > 0)
+            {
+                foreach (var item in orderFoods)
+                {
+                    orderMenus.Add(new OrderMenus()
+                    {
+                        MenuId = item.TblMenuId,
+                        Price = item.Price
+                    });
+                }
+            }
+
+            return orderMenus;
         }
 
         /// <summary>
@@ -107,7 +128,7 @@ namespace MT.OnlineRestaurant.BusinessLayer
                 {
                     string json = await httpResponseMessage.Content.ReadAsStringAsync();
                     RestaurantInformation restaurantInformation = JsonConvert.DeserializeObject<RestaurantInformation>(json);
-                    if(restaurantInformation != null)
+                    if (restaurantInformation != null)
                     {
                         return true;
                     }
@@ -118,9 +139,10 @@ namespace MT.OnlineRestaurant.BusinessLayer
         public async Task<bool> IsOrderItemInStock(OrderEntity orderEntity, int UserId, string UserToken)
         {
             //using (HttpClient httpClient = WebAPIClient.GetClient(UserToken, UserId, _connectionStrings.Value.RestaurantApiUrl))
-            using(HttpClient httpClient = new HttpClient())
+            using (HttpClient httpClient = new HttpClient())
             {
                 HttpResponseMessage httpResponseMessage = await httpClient.GetAsync("http://localhost:10601/api/OrderDetail?RestaurantID=" + orderEntity.RestaurantId);
+                //HttpResponseMessage httpResponseMessage = await httpClient.GetAsync("https://searchapi123.azurewebsites.net/api/OrderDetail?RestaurantID=" + orderEntity.RestaurantId);
                 if (httpResponseMessage.IsSuccessStatusCode)
                 {
                     string json = await httpResponseMessage.Content.ReadAsStringAsync();
@@ -154,13 +176,25 @@ namespace MT.OnlineRestaurant.BusinessLayer
 
         public List<FoodOrderMapping> UpdateStockPrice(StockPrice stocks)
         {
-            List<FoodOrderMapping> Food = null;
+            List<FoodOrderMapping> Food = new List<FoodOrderMapping>();
             var foodOrder = _placeOrderDbAccess.UpdateStockPrice(stocks);
-            foreach (var order in foodOrder)
+            if (foodOrder != null)
             {
-                var item = _mapper.Map<FoodOrderMapping>(foodOrder);
-                Food.Add(item);
+                foreach (var order in foodOrder)
+                {
+                    Food.Add(new FoodOrderMapping()
+                    {
+                        IsItemOutOfStock = order.IsItemOutOfStock,
+                        TblFoodOrderId = order.TblFoodOrderId,
+                        TblMenuId = order.TblMenuId,
+                        Price = order.Price,
+                        Active = order.Active,
+                        Quantity = order.Quantity
+                    });
+                }
+   
             }
+            
             return Food;
         }
 

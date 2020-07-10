@@ -116,8 +116,12 @@ namespace MT.OnlineRestaurant.DataLayer.Migrations
 
                     b.Property<bool>("Active");
 
+                    b.Property<bool>("IsItemOutOfStock");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18, 2)");
+
+                    b.Property<int>("Quantity");
 
                     b.Property<DateTime>("RecordTimeStamp")
                         .ValueGeneratedOnAdd()

@@ -25,5 +25,7 @@ namespace MT.OnlineRestaurant.BusinessLayer.interfaces
         Task<bool> IsOrderItemInStock(OrderEntity orderEntity, int UserId, string UserToken);
         List<FoodOrderMapping> UpdateStockPrice(StockPrice stocks);
 
+        List<OrderMenus> IsOrderPriceChanged(OrderEntity orderEntity, int orderId);
+
     }
 }

@@ -112,5 +112,308 @@ INSERT INTO [dbo].[tblPaymentType]
 
 GO
 
+USE [OrderManagement]
+GO
+
+INSERT INTO [dbo].[tblPaymentStatus]
+           ([Status]
+           ,[UserCreated]
+           ,[UserModified]
+           ,[RecordTimeStamp]
+           ,[RecordTimeStampCreated])
+     VALUES
+           ('Initiated'
+           ,1
+           ,1
+           ,SYSDATETIME()
+           ,SYSDATETIME());
+		   INSERT INTO [dbo].[tblPaymentStatus]
+           ([Status]
+           ,[UserCreated]
+           ,[UserModified]
+           ,[RecordTimeStamp]
+           ,[RecordTimeStampCreated])
+     VALUES
+           ('Processing'
+           ,1
+           ,1
+           ,SYSDATETIME()
+           ,SYSDATETIME());
+INSERT INTO [dbo].[tblPaymentStatus]
+           ([Status]
+           ,[UserCreated]
+           ,[UserModified]
+           ,[RecordTimeStamp]
+           ,[RecordTimeStampCreated])
+     VALUES
+           ('Success'
+           ,1
+           ,1
+           ,SYSDATETIME()
+           ,SYSDATETIME());
+INSERT INTO [dbo].[tblPaymentStatus]
+           ([Status]
+           ,[UserCreated]
+           ,[UserModified]
+           ,[RecordTimeStamp]
+           ,[RecordTimeStampCreated])
+     VALUES
+           ('Failure'
+           ,1
+           ,1
+           ,SYSDATETIME()
+           ,SYSDATETIME());
+GO
+
+
+USE [RestaurantManagement]
+GO
+
+INSERT INTO [dbo].[tblOffer]
+           ([tblRestaurantID]
+           ,[tblMenuID]
+           ,[Price]
+           ,[FromDate]
+           ,[ToDate]
+           ,[Discount]
+           ,[UserCreated]
+           ,[UserModified]
+           ,[RecordTimeStamp]
+           ,[RecordTimeStampCreated])
+     VALUES
+           (2
+           ,3
+           ,40
+           ,SYSDATETIME()
+           ,SYSDATETIME()
+           ,3
+           ,1
+           ,1
+           ,SYSDATETIME()
+           ,SYSDATETIME());
+		   INSERT INTO [dbo].[tblOffer]
+           ([tblRestaurantID]
+           ,[tblMenuID]
+           ,[Price]
+           ,[FromDate]
+           ,[ToDate]
+           ,[Discount]
+           ,[UserCreated]
+           ,[UserModified]
+           ,[RecordTimeStamp]
+           ,[RecordTimeStampCreated])
+     VALUES
+           (2
+           ,4
+           ,40
+           ,SYSDATETIME()
+           ,SYSDATETIME()
+           ,3
+           ,1
+           ,1
+           ,SYSDATETIME()
+           ,SYSDATETIME());
+		   INSERT INTO [dbo].[tblOffer]
+           ([tblRestaurantID]
+           ,[tblMenuID]
+           ,[Price]
+           ,[FromDate]
+           ,[ToDate]
+           ,[Discount]
+           ,[UserCreated]
+           ,[UserModified]
+           ,[RecordTimeStamp]
+           ,[RecordTimeStampCreated])
+     VALUES
+           (2
+           ,5
+           ,40
+           ,SYSDATETIME()
+           ,SYSDATETIME()
+           ,3
+           ,1
+           ,1
+           ,SYSDATETIME()
+           ,SYSDATETIME());
+		   INSERT INTO [dbo].[tblOffer]
+           ([tblRestaurantID]
+           ,[tblMenuID]
+           ,[Price]
+           ,[FromDate]
+           ,[ToDate]
+           ,[Discount]
+           ,[UserCreated]
+           ,[UserModified]
+           ,[RecordTimeStamp]
+           ,[RecordTimeStampCreated])
+     VALUES
+           (2
+           ,6
+           ,40
+           ,SYSDATETIME()
+           ,SYSDATETIME()
+           ,3
+           ,1
+           ,1
+           ,SYSDATETIME()
+           ,SYSDATETIME())
+		   INSERT INTO [dbo].[tblOffer]
+           ([tblRestaurantID]
+           ,[tblMenuID]
+           ,[Price]
+           ,[FromDate]
+           ,[ToDate]
+           ,[Discount]
+           ,[UserCreated]
+           ,[UserModified]
+           ,[RecordTimeStamp]
+           ,[RecordTimeStampCreated])
+     VALUES
+           (2
+           ,7
+           ,40
+           ,SYSDATETIME()
+           ,SYSDATETIME()
+           ,3
+           ,1
+           ,1
+           ,SYSDATETIME()
+           ,SYSDATETIME());
+		   INSERT INTO [dbo].[tblOffer]
+           ([tblRestaurantID]
+           ,[tblMenuID]
+           ,[Price]
+           ,[FromDate]
+           ,[ToDate]
+           ,[Discount]
+           ,[UserCreated]
+           ,[UserModified]
+           ,[RecordTimeStamp]
+           ,[RecordTimeStampCreated])
+     VALUES
+           (2
+           ,8
+           ,40
+           ,SYSDATETIME()
+           ,SYSDATETIME()
+           ,3
+           ,1
+           ,1
+           ,SYSDATETIME()
+           ,SYSDATETIME());
+		   INSERT INTO [dbo].[tblOffer]
+           ([tblRestaurantID]
+           ,[tblMenuID]
+           ,[Price]
+           ,[FromDate]
+           ,[ToDate]
+           ,[Discount]
+           ,[UserCreated]
+           ,[UserModified]
+           ,[RecordTimeStamp]
+           ,[RecordTimeStampCreated])
+     VALUES
+           (2
+           ,9
+           ,40
+           ,SYSDATETIME()
+           ,SYSDATETIME()
+           ,3
+           ,1
+           ,1
+           ,SYSDATETIME()
+           ,SYSDATETIME());
+		   INSERT INTO [dbo].[tblOffer]
+           ([tblRestaurantID]
+           ,[tblMenuID]
+           ,[Price]
+           ,[FromDate]
+           ,[ToDate]
+           ,[Discount]
+           ,[UserCreated]
+           ,[UserModified]
+           ,[RecordTimeStamp]
+           ,[RecordTimeStampCreated])
+     VALUES
+           (2
+           ,10
+           ,40
+           ,SYSDATETIME()
+           ,SYSDATETIME()
+           ,3
+           ,1
+           ,1
+           ,SYSDATETIME()
+           ,SYSDATETIME());
+   INSERT INTO [dbo].[tblOffer]
+           ([tblRestaurantID]
+           ,[tblMenuID]
+           ,[Price]
+           ,[FromDate]
+           ,[ToDate]
+           ,[Discount]
+           ,[UserCreated]
+           ,[UserModified]
+           ,[RecordTimeStamp]
+           ,[RecordTimeStampCreated])
+     VALUES
+           (1
+           ,1
+           ,50
+           ,SYSDATETIME()
+           ,SYSDATETIME()
+           ,3
+           ,1
+           ,1
+           ,SYSDATETIME()
+           ,SYSDATETIME());
+		      INSERT INTO [dbo].[tblOffer]
+           ([tblRestaurantID]
+           ,[tblMenuID]
+           ,[Price]
+           ,[FromDate]
+           ,[ToDate]
+           ,[Discount]
+           ,[UserCreated]
+           ,[UserModified]
+           ,[RecordTimeStamp]
+           ,[RecordTimeStampCreated])
+     VALUES
+           (1
+           ,2
+           ,50
+           ,SYSDATETIME()
+           ,SYSDATETIME()
+           ,3
+           ,1
+           ,1
+           ,SYSDATETIME()
+           ,SYSDATETIME());
+		      INSERT INTO [dbo].[tblOffer]
+           ([tblRestaurantID]
+           ,[tblMenuID]
+           ,[Price]
+           ,[FromDate]
+           ,[ToDate]
+           ,[Discount]
+           ,[UserCreated]
+           ,[UserModified]
+           ,[RecordTimeStamp]
+           ,[RecordTimeStampCreated])
+     VALUES
+           (1
+           ,3
+           ,50
+           ,SYSDATETIME()
+           ,SYSDATETIME()
+           ,3
+           ,1
+           ,1
+           ,SYSDATETIME()
+           ,SYSDATETIME());
+GO
+
+
+
 
 

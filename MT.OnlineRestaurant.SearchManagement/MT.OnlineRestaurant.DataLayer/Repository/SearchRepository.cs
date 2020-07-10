@@ -252,26 +252,62 @@ namespace MT.OnlineRestaurant.DataLayer.Repository
 
                     if (!(searchDetails.location.xaxis <= 0) || (searchDetails.location.yaxis < 0))
                     {
-                        foreach (var place in restaurantFilter)
+                        if (restaurantFilter != null)
                         {
-                            double distance = Distance(searchDetails.location.xaxis, searchDetails.location.yaxis, (double)place.TblLocation.X, (double)place.TblLocation.Y);
-                            if (distance < int.Parse(searchDetails.location.distance.ToString()))
+                            foreach (var place in restaurantFilter)
+                            {
+                                double distance = Distance(searchDetails.location.xaxis, searchDetails.location.yaxis, (double)place.TblLocation.X, (double)place.TblLocation.Y);
+                                if (distance < int.Parse(searchDetails.location.distance.ToString()))
+                                {
+                                    RestaurantSearchDetails tblRestaurant = new RestaurantSearchDetails
+                                    {
+                                        restaurant_ID = place.TblRestaurant.Id,
+                                        restaurant_Name = place.TblRestaurant.Name,
+                                        restaurant_Address = place.TblRestaurant.Address,
+                                        restaurant_PhoneNumber = place.TblRestaurant.ContactNo,
+                                        restraurant_Website = place.TblRestaurant.Website,
+                                        closing_Time = place.TblRestaurant.CloseTime,
+                                        opening_Time = place.TblRestaurant.OpeningTime,
+                                        xaxis = (double)place.TblLocation.X,
+                                        yaxis = (double)place.TblLocation.Y
+                                    };
+                                    try
+                                    {
+                                        tblRestaurant.rating = place.TblRestaurant.TblRating.Average(x => Convert.ToDecimal(x.Rating));
+                                    }
+                                    catch
+                                    {
+                                        tblRestaurant.rating = 0;
+                                    }
+                                    restaurants.Add(tblRestaurant);
+                                }
+                            }
+                        }
+
+                    }
+                    else
+                    {
+                        if (restaurantFilter != null)
+                        {
+                            foreach (var item in restaurantFilter)
                             {
                                 RestaurantSearchDetails tblRestaurant = new RestaurantSearchDetails
                                 {
-                                    restaurant_ID = place.TblRestaurant.Id,
-                                    restaurant_Name = place.TblRestaurant.Name,
-                                    restaurant_Address = place.TblRestaurant.Address,
-                                    restaurant_PhoneNumber = place.TblRestaurant.ContactNo,
-                                    restraurant_Website = place.TblRestaurant.Website,
-                                    closing_Time = place.TblRestaurant.CloseTime,
-                                    opening_Time = place.TblRestaurant.OpeningTime,
-                                    xaxis = (double)place.TblLocation.X,
-                                    yaxis = (double)place.TblLocation.Y
+                                    restaurant_ID = item.TblRestaurant.Id,
+                                    restaurant_Name = item.TblRestaurant.Name,
+                                    restaurant_Address = item.TblRestaurant.Address,
+                                    restaurant_PhoneNumber = item.TblRestaurant.ContactNo,
+                                    restraurant_Website = item.TblRestaurant.Website,
+                                    closing_Time = item.TblRestaurant.CloseTime,
+                                    opening_Time = item.TblRestaurant.OpeningTime,
+                                    xaxis = (double)item.TblLocation.X,
+                                    yaxis = (double)item.TblLocation.Y
+
                                 };
+
                                 try
                                 {
-                                    tblRestaurant.rating = place.TblRestaurant.TblRating.Average(x => Convert.ToDecimal(x.Rating));
+                                    tblRestaurant.rating = item.TblRestaurant.TblRating.Average(x => Convert.ToDecimal(x.Rating));
                                 }
                                 catch
                                 {
@@ -279,36 +315,6 @@ namespace MT.OnlineRestaurant.DataLayer.Repository
                                 }
                                 restaurants.Add(tblRestaurant);
                             }
-                        }
-
-                    }
-                    else
-                    {
-                        foreach (var item in restaurantFilter)
-                        {
-                            RestaurantSearchDetails tblRestaurant = new RestaurantSearchDetails
-                            {
-                                restaurant_ID = item.TblRestaurant.Id,
-                                restaurant_Name = item.TblRestaurant.Name,
-                                restaurant_Address = item.TblRestaurant.Address,
-                                restaurant_PhoneNumber = item.TblRestaurant.ContactNo,
-                                restraurant_Website = item.TblRestaurant.Website,
-                                closing_Time = item.TblRestaurant.CloseTime,
-                                opening_Time = item.TblRestaurant.OpeningTime,
-                                xaxis = (double)item.TblLocation.X,
-                                yaxis = (double)item.TblLocation.Y
-
-                            };
-
-                            try
-                            {
-                                tblRestaurant.rating = item.TblRestaurant.TblRating.Average(x => Convert.ToDecimal(x.Rating));
-                            }
-                            catch
-                            {
-                                tblRestaurant.rating = 0;
-                            }
-                            restaurants.Add(tblRestaurant);
                         }
                     }
                 }
@@ -409,10 +415,13 @@ namespace MT.OnlineRestaurant.DataLayer.Repository
             TblOffer OfferObj = new TblOffer();
             if (db != null)
             {
-                OfferObj = db.TblOffer.Where(p => p.TblMenuId == stock.MenuId).FirstOrDefault();
-                OfferObj.Price = stock.ChangedPrice;
-                db.TblOffer.Update(OfferObj);
-                return db.SaveChanges();
+                OfferObj = db.TblOffer.Where(p => p.TblMenuId == stock.MenuId && p.TblRestaurantId ==stock.RestuarantId).FirstOrDefault();
+                if (OfferObj != null)
+                {
+                    OfferObj.Price = stock.ChangedPrice;
+                    db.TblOffer.Update(OfferObj);
+                    return db.SaveChanges();
+                }
             }
             return 0;
         }

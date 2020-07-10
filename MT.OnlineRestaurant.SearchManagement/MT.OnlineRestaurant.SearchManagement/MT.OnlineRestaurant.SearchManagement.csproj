@@ -32,9 +32,11 @@
   <ItemGroup>
     <Reference Include="MT.OnlineRestaurant.Logging">
       <HintPath>..\..\CommonLibraries\MT.OnlineRestaurant.Logging.dll</HintPath>
+      <Private>true</Private>
     </Reference>
     <Reference Include="MT.OnlineRestaurant.ValidateUserHandler">
       <HintPath>..\..\CommonLibraries\MT.OnlineRestaurant.ValidateUserHandler.dll</HintPath>
+      <Private>true</Private>
     </Reference>
   </ItemGroup>
 

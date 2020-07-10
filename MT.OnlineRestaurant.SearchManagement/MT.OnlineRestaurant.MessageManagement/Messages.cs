@@ -9,9 +9,9 @@ namespace MT.OnlineRestaurant.MessageManagement
 {
     public class Messages : IMessages
     {
-        const string ServiceBusConnectionString = "Endpoint=sb://capstone-servicebus.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=PrtYphKpM27TGsqA9qUQicFvJDqc6AT+Y2AdhOBF/ns=";
+        const string ServiceBusConnectionString = "Endpoint=sb://capstone-servicebus.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=n+ZoPt3AHxla2G1P1hd0nPXC3sPUgo0oz0K8sYv6G1U=";
         const string TopicName = "itemoutofstock";
-        const string SubscriptionName = "s1";
+        const string SubscriptionName = "subitemoutofstock";
         static ISubscriptionClient subscriptionClient;
         public void RegisterOnMessageHandlerAndReceiveMessages()
         {

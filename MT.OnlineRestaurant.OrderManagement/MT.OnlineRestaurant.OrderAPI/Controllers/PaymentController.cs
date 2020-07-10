@@ -38,8 +38,9 @@ namespace MT.OnlineRestaurant.OrderAPI.Controllers
         [Route("api/MakePayment")]
         public async Task<IActionResult> MakePayment(PaymentEntity paymentEntity)
         {
+         
             var items = _paymentActions.CheckIfOrderOutOfStock(paymentEntity.OrderId);
-            if (items != null && items.Count == 0)
+            if (items == null || items.Count == 0)
             {
                 PaymentEntityValidator paymentEntityValidator = new PaymentEntityValidator();
                 ValidationResult validationResult = paymentEntityValidator.Validate(paymentEntity);
