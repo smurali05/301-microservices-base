@@ -49,7 +49,6 @@ namespace MT.OnlineRestaurant.OrderAPI.MessageManagement
 
         private async Task ProcessMessagesAsync(Message message, CancellationToken token)
         {
-
             var stocks = JsonConvert.DeserializeObject<StockInformation>(Encoding.UTF8.GetString(message.Body));
             _processData.UpdateOutOfStock(stocks);
             await _subscriptionClient.CompleteAsync(message.SystemProperties.LockToken);

@@ -141,13 +141,13 @@ namespace MT.OnlineRestaurant.BusinessLayer
             //using (HttpClient httpClient = WebAPIClient.GetClient(UserToken, UserId, _connectionStrings.Value.RestaurantApiUrl))
             using (HttpClient httpClient = new HttpClient())
             {
-                HttpResponseMessage httpResponseMessage = await httpClient.GetAsync("http://localhost:10601/api/OrderDetail?RestaurantID=" + orderEntity.RestaurantId);
-                //HttpResponseMessage httpResponseMessage = await httpClient.GetAsync("https://searchapi123.azurewebsites.net/api/OrderDetail?RestaurantID=" + orderEntity.RestaurantId);
+                //HttpResponseMessage httpResponseMessage = await httpClient.GetAsync("http://localhost:10601/api/OrderDetail?RestaurantID=" + orderEntity.RestaurantId + "&menuID=" + orderEntity.OrderMenuDetails.First().MenuId);
+                HttpResponseMessage httpResponseMessage = await httpClient.GetAsync("https://searchapi123.azurewebsites.net/api/OrderDetail?RestaurantID=" + orderEntity.RestaurantId + "&menuID=" + orderEntity.OrderMenuDetails.First().MenuId);
                 if (httpResponseMessage.IsSuccessStatusCode)
                 {
                     string json = await httpResponseMessage.Content.ReadAsStringAsync();
-                    RestaurantInformation restaurantInformation = JsonConvert.DeserializeObject<RestaurantInformation>(json);
-                    if (restaurantInformation != null)
+                    int restaurantInformationId = JsonConvert.DeserializeObject<int>(json);
+                    if (restaurantInformationId == orderEntity.RestaurantId)
                     {
                         return true;
                     }

@@ -9,7 +9,7 @@ namespace MT.OnlineRestuarant.Messaging
     public class ReceiveAsync
     {
 
-        const string ServiceBusConnectionString = "Endpoint=sb://capstone-servicebus.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=+j/6wYFsXwlIIbrP2dZAZVlNK6gjQgV8SXzVJC1WCGc=";
+        const string ServiceBusConnectionString = "Endpoint=sb://capstone-servicebus.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=BPhXiBqVirMEKwMgWeyaqJuGcc69kQfr9J7nUTP9SdI=";
         const string TopicName = "itemoutofstock";
         const string SubscriptionName = "dotnetazure18";
         static ISubscriptionClient subscriptionClient;

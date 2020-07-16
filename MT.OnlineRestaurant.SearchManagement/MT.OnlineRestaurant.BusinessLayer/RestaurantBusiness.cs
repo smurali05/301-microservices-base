@@ -256,7 +256,7 @@ namespace MT.OnlineRestaurant.BusinessLayer
             RestaurantMenu menuObj = new RestaurantMenu();
             TblMenu menu = search_Repository.ItemInStock(restaurantID, menuID);
             menuObj.quantity = menu.quantity;
-            return 0;
+            return menuObj.quantity;
         }
 
         public List<Menu> UpdateStockCount(List<StockInformation> stocks)

@@ -10,7 +10,7 @@ namespace MT.OnlineRestuarant.Messaging
 {
     public class SendAsync
     {
-        const string ServiceBusConnectionString = "Endpoint=sb://capstone-servicebus.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=+j/6wYFsXwlIIbrP2dZAZVlNK6gjQgV8SXzVJC1WCGc=";
+        const string ServiceBusConnectionString = "Endpoint=sb://capstone-servicebus.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=BPhXiBqVirMEKwMgWeyaqJuGcc69kQfr9J7nUTP9SdI=";
         const string TopicName = "itemoutofstock";
         static ITopicClient topicClient;
         public async Task SendMessagesAsync(OrderEntity orderEntity)
