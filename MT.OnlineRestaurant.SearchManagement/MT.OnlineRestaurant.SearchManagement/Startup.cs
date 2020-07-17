@@ -70,7 +70,7 @@ namespace MT.OnlineRestaurant.SearchManagement
 
             services.AddDbContext<RestaurantManagementContext>(options =>
                options.UseSqlServer(Configuration.GetConnectionString("DatabaseConnectionString"),
-               b => b.MigrationsAssembly("MT.OnlineRestaurant.DataLayer")));
+               b => b.MigrationsAssembly("MT.OnlineRestaurant.DataLayer")), ServiceLifetime.Transient);
 
 
             services.AddMvc()
@@ -80,7 +80,7 @@ namespace MT.OnlineRestaurant.SearchManagement
                         //options.Filters.Add(new LoggingFilter(Configuration["ConnectionString:DatabaseConnectionString"]));
                         options.Filters.Add(new ErrorHandlingFilter(Configuration["ConnectionString:DatabaseConnectionString"]));
                         //options.Filters.Add(new LoggingFilter(Configuration.GetConnectionString("DatabaseConnectionString")));
-                        options.Filters.Add(new ErrorHandlingFilter(Configuration.GetConnectionString("DatabaseConnectionString")));
+                        //options.Filters.Add(new ErrorHandlingFilter(Configuration.GetConnectionString("DatabaseConnectionString")));
 
                     });
 
@@ -88,9 +88,13 @@ namespace MT.OnlineRestaurant.SearchManagement
             services.AddTransient<ISearchRepository, SearchRepository>();
             services.AddTransient<IServiceBusSenderOutOfStock, ServiceBusSenderOutOfStock>();
             services.AddTransient<IServiceBusTopicSender, ServiceBusTopicSender>();
+            services.AddTransient<IServiceBusTopicReceiver, ServiceBusTopicReceiver>();
 
             services.AddTransient<IRestaurantBusiness, RestaurantBusiness>();
             services.AddTransient<ISearchRepository, SearchRepository>();
+
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

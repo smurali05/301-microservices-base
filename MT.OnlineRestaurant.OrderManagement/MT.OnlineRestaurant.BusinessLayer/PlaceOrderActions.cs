@@ -58,7 +58,8 @@ namespace MT.OnlineRestaurant.BusinessLayer
                     TblMenuId = orderMenu.MenuId,
                     Price = orderMenu.Price,
                     UserCreated = 0,
-                    RecordTimeStampCreated = DateTime.Now
+                    RecordTimeStampCreated = DateTime.Now,
+                    Quantity = 1
                 });
             }
 
@@ -204,8 +205,8 @@ namespace MT.OnlineRestaurant.BusinessLayer
             var foodOrder = _placeOrderDbAccess.UpdateOutOfStock(stock);
             foreach (var item in foodOrder)
             {
-                var Order = _mapper.Map<FoodOrderMapping>(foodOrder);
-                foodOrderMappings.Add(Order);
+                //var Order = _mapper.Map<FoodOrderMapping>(foodOrder);
+                //foodOrderMappings.Add(Order);
             }
             return foodOrderMappings;
         }

@@ -25,8 +25,9 @@ namespace MT.OnlineRestaurant.OrderAPI.ModelValidators
 
             RuleFor(m => m)
                 .NotEmpty()
-                .NotNull()
-                .Must(r => BeAValidItemOrder(r, UserId, UserToken)).When(p => p.RestaurantId != 0).WithMessage("Invalid order");
+                .NotNull().WithMessage("Invalid order");
+
+            RuleFor(m => m).Must(r => BeAValidItemOrder(r, UserId, UserToken)).When(p => p.RestaurantId != 0).WithMessage("Item out of stock.");
 
             RuleFor(m => m.CustomerId)
                 .NotEmpty()

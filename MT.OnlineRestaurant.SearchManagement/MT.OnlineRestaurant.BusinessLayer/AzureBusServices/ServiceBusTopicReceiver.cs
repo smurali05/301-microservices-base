@@ -50,7 +50,6 @@ namespace MT.OnlineRestaurant.BusinessLayer.AzureBusServices
 
         private async Task ProcessMessagesAsync(Message message, CancellationToken token)
         {
-
             var stocks = JsonConvert.DeserializeObject<List<StockInformation>>(Encoding.UTF8.GetString(message.Body));
             _processData.UpdateStockCount(stocks);
             await _subscriptionClient.CompleteAsync(message.SystemProperties.LockToken);

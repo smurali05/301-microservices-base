@@ -7,7 +7,6 @@ using MT.OnlineRestaurant.BusinessLayer.Interfaces;
 using MT.OnlineRestaurant.DataLayer;
 using MT.OnlineRestaurant.DataLayer.Context;
 using MT.OnlineRestaurant.DataLayer.Interfaces;
-using MT.OnlineRestaurant.Logging;
 using MT.OnlineRestaurant.ValidateUserHandler;
 using MT.OnlineRestuarant.DataLayer;
 using Swashbuckle.AspNetCore.Swagger;
@@ -60,8 +59,8 @@ namespace MT.OnlineRestaurant.AccountManagement
             services.AddMvc(
                           config =>
                           {
-                              config.Filters.Add(new LoggingFilter(Configuration.GetConnectionString("DatabaseConnectionString")));
-                              config.Filters.Add(new ErrorHandlingFilter(Configuration.GetConnectionString("DatabaseConnectionString")));
+                             //config.Filters.Add(new LoggingFilter(Configuration.GetConnectionString("DatabaseConnectionString")));
+                              //config.Filters.Add(new ErrorHandlingFilter(Configuration.GetConnectionString("DatabaseConnectionString")));
 
                           });
             //addedd

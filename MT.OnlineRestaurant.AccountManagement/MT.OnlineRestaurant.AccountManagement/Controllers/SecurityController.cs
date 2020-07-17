@@ -27,14 +27,14 @@ namespace MT.OnlineRestaurant.AccountManagement.Controllers
         [AllowAnonymous]
         public IActionResult Login(string username, string password)
         {
-            var user = _userBusiness.UserLogin(username, password);
-            if (user == null)
-                return BadRequest("Please enter valid username and password");
+            //var user = _userBusiness.UserLogin(username, password);
+           // if (user == null)
+            ///    return BadRequest("Please enter valid username and password");
             string tokenString = TokenGenerator.CreateToken(_appSettings.SecretKey, _appSettings.IssuerKey, user.Id,Convert.ToInt32(_appSettings.ExpiryTime));
             return Ok(new
             {
-                UserID =user.Id,
-                User = user.FirstName + user.LastName,
+              //  UserID =user.Id,
+               // User = user.FirstName + user.LastName,
                 token = tokenString
             });
 

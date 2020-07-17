@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,10 +19,13 @@ namespace MT.OnlineRestaurant.SearchManagement.Controllers
     {
         private readonly IRestaurantBusiness business_Repo; 
         private readonly IServiceBusTopicSender _serviceBusTopicSender;
-        public SearchController(IRestaurantBusiness _business_Repo, IServiceBusTopicSender serviceBusTopicSender)
+        private readonly IServiceBusTopicReceiver _serviceBusTopicReciever;
+
+        public SearchController(IRestaurantBusiness _business_Repo, IServiceBusTopicSender serviceBusTopicSender, IServiceBusTopicReceiver serviceBusTopicReciever)
         {
             business_Repo = _business_Repo;
             _serviceBusTopicSender = serviceBusTopicSender;
+            _serviceBusTopicReciever = serviceBusTopicReciever;
         }
         [HttpGet]
         [Route("ResturantDetail")]
@@ -131,6 +135,10 @@ namespace MT.OnlineRestaurant.SearchManagement.Controllers
         [Route("OrderDetail")]
         public IActionResult OrderDetail([FromQuery]int restaurantID,int menuID)
         {
+            _serviceBusTopicReciever.RegisterOnMessageHandlerAndReceiveMessages();
+
+            Thread.Sleep(10000);
+
             int query_result = business_Repo.ItemInStock(restaurantID, menuID);
             if (query_result > 0)
             {

@@ -1,18 +1,20 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.Extensions.DependencyInjection;
 using MoreLinq;
 using MT.OnlineRestaurant.DataLayer.DataEntity;
 using MT.OnlineRestaurant.DataLayer.EntityFrameWorkModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using BusinessEntities = MT.OnlineRestaurant.BusinessEntities;
 
 namespace MT.OnlineRestaurant.DataLayer.Repository
 {
     public class SearchRepository : ISearchRepository
     {
-        private readonly RestaurantManagementContext db;
+        private RestaurantManagementContext db;
         public SearchRepository(RestaurantManagementContext connection)
         {
             db = connection;
@@ -381,11 +383,16 @@ namespace MT.OnlineRestaurant.DataLayer.Repository
         public List<TblMenu> UpdatestockCount(List<BusinessEntities.StockInformation> stocks)
         {
             List<TblMenu> tblMenus = new List<TblMenu>();
-            foreach (var stock in stocks)
-            {
 
-                if (db != null)
+            var optionsBuilder = new DbContextOptionsBuilder<RestaurantManagementContext>();
+            optionsBuilder.UseSqlServer("Server=tcp:301mcsmurali.database.windows.net,1433;Initial Catalog=RestaurantManagement;Persist Security Info=False;User ID=muralidb;Password=Welcome123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
+               b => b.MigrationsAssembly("MT.OnlineRestaurant.DataLayer"));
+
+            using (var context = new RestaurantManagementContext(optionsBuilder.Options))
+            {
+                foreach (var stock in stocks)
                 {
+
                     //var menuObj = (from offer in db.TblOffer
                     //           join menu in db.TblMenu
                     //           on offer.TblMenuId equals menu.Id
@@ -403,9 +410,9 @@ namespace MT.OnlineRestaurant.DataLayer.Repository
                     db.TblMenu.Update(menuObj);
                     db.SaveChanges();
                     tblMenus.Add(menuObj);
-
                 }
             }
+            
             return tblMenus;
         }
 

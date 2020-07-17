@@ -413,7 +413,33 @@ INSERT INTO [dbo].[tblOffer]
            ,SYSDATETIME());
 GO
 
+/****** Script for SelectTopNRows command from SSMS  ******/
+SELECT TOP (1000) [ID]
+      ,[Item]
+      ,[tblCuisineID]
+      ,[UserCreated]
+      ,[UserModified]
+      ,[RecordTimeStamp]
+      ,[RecordTimeStampCreated]
+      ,[Quantity]
+  FROM [RestaurantManagement].[dbo].[tblMenu]
 
+  update tblMenu set Quantity = 2 where ID in (5,6,7,8,9)
+
+
+/****** Script for SelectTopNRows command from SSMS  ******/
+SELECT TOP (1000) [ID]
+      ,[tblFoodOrderID]
+      ,[tblMenuID]
+      ,[Price]
+      ,[Active]
+      ,[UserCreated]
+      ,[UserModified]
+      ,[RecordTimeStamp]
+      ,[RecordTimeStampCreated]
+      ,[IsItemOutOfStock]
+      ,[Quantity]
+  FROM [dbo].[tblFoodOrderMapping]
 
 
 

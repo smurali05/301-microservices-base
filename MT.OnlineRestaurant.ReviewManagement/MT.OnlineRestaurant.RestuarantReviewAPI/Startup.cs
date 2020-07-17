@@ -84,7 +84,7 @@ namespace MT.OnlineRestaurant.RestuarantReviewAPI
             services.AddMvc()
                     .AddMvcOptions(options =>
                     {
-                        //options.Filters.Add(new Authorization());
+                        options.Filters.Add(new Authorization());
                         options.Filters.Add(new LoggingFilter(Configuration.GetConnectionString("DatabaseConnectionString")));
                         options.Filters.Add(new ErrorHandlingFilter(Configuration.GetConnectionString("DatabaseConnectionString")));
                     });                        

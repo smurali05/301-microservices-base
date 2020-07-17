@@ -263,18 +263,25 @@ namespace MT.OnlineRestaurant.BusinessLayer
         {
             List<Menu> items = new List<Menu>();
             List<TblMenu> menus = search_Repository.UpdatestockCount(stocks);
-            foreach (var menu in menus)
+            try
             {
-                StockInformation stock = new StockInformation();
-                stock.MenuId = menu.Id;
-                stock.OrderId = stocks.FirstOrDefault().OrderId;
-                stock.Quantity = menu.quantity;
-                if (stock.Quantity == 0)
+                foreach (var menu in menus)
                 {
-                    _serviceBusSenderOutOfStock.SendMessage(stock);
+                    StockInformation stock = new StockInformation();
+                    stock.MenuId = menu.Id;
+                    stock.OrderId = stocks.FirstOrDefault().OrderId;
+                    stock.Quantity = menu.quantity;
+                    //if (stock.Quantity == 0)
+                    //{
+                    //    _serviceBusSenderOutOfStock.SendMessage(stock);
+                    //}
+                    var item = _mapper.Map<Menu>(menu);
+                    items.Add(item);
                 }
-                var item = _mapper.Map<Menu>(menu);
-                items.Add(item);
+            }
+            catch (Exception ex)
+            {
+                               
             }
             return items;
         }

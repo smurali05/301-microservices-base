@@ -6,6 +6,7 @@ using MT.OnlineRestaurant.BusinessLayer.interfaces;
 using MT.OnlineRestaurant.OrderAPI.MessageManagement;
 using MT.OnlineRestaurant.OrderAPI.ModelValidators;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 #endregion
 
@@ -19,14 +20,16 @@ namespace MT.OnlineRestaurant.OrderAPI.Controllers
     {
         private readonly IPaymentActions _paymentActions;
         private readonly IServiceBusTopicSender _serviceBusTopicSender;
+        private readonly IServiceBusOutOfStockReceiver _serviceBusOutofStockReviever;
         /// <summary>
         /// Inject buisiness layer dependency
         /// </summary>
         /// <param name="paymentActions"></param>
-        public PaymentController(IPaymentActions paymentActions, IServiceBusTopicSender serviceBusTopicSender)
+        public PaymentController(IPaymentActions paymentActions, IServiceBusTopicSender serviceBusTopicSender, IServiceBusOutOfStockReceiver serviceBusOutOfStockReceiver)
         {
             _paymentActions = paymentActions;
             _serviceBusTopicSender = serviceBusTopicSender;
+            _serviceBusOutofStockReviever = serviceBusOutOfStockReceiver;
         }
 
         /// <summary>
@@ -38,6 +41,9 @@ namespace MT.OnlineRestaurant.OrderAPI.Controllers
         [Route("api/MakePayment")]
         public async Task<IActionResult> MakePayment(PaymentEntity paymentEntity)
         {
+            _serviceBusOutofStockReviever.RegisterOnMessageHandlerAndReceiveMessages();
+
+            Thread.Sleep(5000);
          
             var items = _paymentActions.CheckIfOrderOutOfStock(paymentEntity.OrderId);
             if (items == null || items.Count == 0)

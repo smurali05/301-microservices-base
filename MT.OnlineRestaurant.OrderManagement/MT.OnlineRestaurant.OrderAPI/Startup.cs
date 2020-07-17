@@ -93,7 +93,7 @@ namespace MT.OnlineRestaurant.OrderAPI
 
             services.AddDbContext<OrderManagementContext>(options =>
                options.UseSqlServer(Configuration.GetConnectionString("DatabaseConnectionString"),
-               b => b.MigrationsAssembly("MT.OnlineRestaurant.DataLayer")));
+               b => b.MigrationsAssembly("MT.OnlineRestaurant.DataLayer")), ServiceLifetime.Transient);
 
             services.AddMvc()
                     .AddMvcOptions(options =>

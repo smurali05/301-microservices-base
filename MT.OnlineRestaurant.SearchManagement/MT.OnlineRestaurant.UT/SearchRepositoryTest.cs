@@ -76,10 +76,11 @@ namespace MT.OnlineRestaurant.UT
             });
             var mockOrder = new Mock<IRestaurantBusiness>();
             var mockIServiceBusTopicSender = new Mock<IServiceBusTopicSender>();
+            var mockServiceBusReciever = new Mock<IServiceBusTopicReceiver>();
             mockOrder.Setup(x => x.GetRestaurantRating(1)).Returns(restaurantRatings.AsQueryable());
 
             //Act
-            var searchController = new SearchController(mockOrder.Object, mockIServiceBusTopicSender.Object);
+            var searchController = new SearchController(mockOrder.Object, mockIServiceBusTopicSender.Object, mockServiceBusReciever.Object);
             var data = searchController.GetResturantRating(1);
             var okObjectResult = data as OkObjectResult;
 
@@ -87,6 +88,36 @@ namespace MT.OnlineRestaurant.UT
             Assert.AreEqual(200, okObjectResult.StatusCode);
             Assert.IsNotNull(okObjectResult);
             Assert.AreEqual((okObjectResult.Value as IEnumerable<RestaurantRating>).Count(), restaurantRatings.Count());
+        }
+
+        [Test]
+        public void SearchForRestaurant()
+        {
+            //Arrange
+            List<RestaurantInformation> restaurantInfos = new List<RestaurantInformation>();
+            SearchForRestaurant searchForRestuarant = new SearchForRestaurant()
+            {
+                location = new LocationDetails()
+                {
+                    restaurant_Name = "Zeejubin International "
+                },
+                search = new AdditionalFeatureForSearch()
+            };
+
+            
+            var mockOrder = new Mock<IRestaurantBusiness>();
+            var mockIServiceBusTopicSender = new Mock<IServiceBusTopicSender>();
+            var mockServiceBusReciever = new Mock<IServiceBusTopicReceiver>();
+            mockOrder.Setup(x => x.SearchForRestaurant(searchForRestuarant)).Returns(restaurantInfos.AsQueryable());
+
+            //Act
+            var searchController = new SearchController(mockOrder.Object, mockIServiceBusTopicSender.Object, mockServiceBusReciever.Object);
+            var data = searchController.SearchForRestaurant(searchForRestuarant);
+            var okObjectResult = data as OkObjectResult;
+
+            //Assert
+            Assert.AreEqual(200, okObjectResult.StatusCode);
+            Assert.IsNotNull(okObjectResult);
         }
 
     }
